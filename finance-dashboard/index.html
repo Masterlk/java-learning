@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>模拟双增观察台</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <p class="kicker">模拟样本 · 非真实行情</p>
+        <h1>双增观察台</h1>
+      </div>
+    </div>
+    <p class="lede">
+      随机生成一批类 A 股公司的中报口径数据，筛出<strong>营收同比</strong>与<strong>净利润同比</strong>均高于阈值的标的，并对照象限、行业与明细表查看。
+    </p>
+    <div class="controls">
+      <label>
+        营收阈值
+        <input id="rev-th" type="number" min="0" max="80" step="1" value="15" />
+        <span>%</span>
+      </label>
+      <label>
+        净利阈值
+        <input id="np-th" type="number" min="0" max="80" step="1" value="15" />
+        <span>%</span>
+      </label>
+      <label class="check">
+        <input id="only-pass" type="checkbox" checked />
+        只看双增
+      </label>
+      <button id="regen" type="button">换一批样本</button>
+    </div>
+  </header>
+
+  <p id="ticker" class="ticker" aria-live="polite"></p>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="stage">
+    <article class="panel scatter-panel">
+      <div class="panel-head">
+        <h2>增长象限</h2>
+        <p>横轴营收同比，纵轴净利润同比。十字虚线为当前阈值，圆点大小表示模拟市值。</p>
+      </div>
+      <div id="scatter" class="chart-box"></div>
+      <div id="tooltip" class="tooltip" hidden></div>
+    </article>
+    <article class="panel">
+      <div class="panel-head">
+        <h2>双增行业分布</h2>
+        <p>通过筛选的公司按行业计数。</p>
+      </div>
+      <div id="industry" class="chart-box"></div>
+    </article>
+  </section>
+
+  <section class="stage">
+    <article class="panel grow-panel">
+      <div class="panel-head">
+        <h2>净利增速前十</h2>
+        <p>在当前阈值下的双增公司中，按净利润同比排序。</p>
+      </div>
+      <div id="top-bars" class="chart-box"></div>
+    </article>
+    <article class="panel detail-panel">
+      <div class="panel-head">
+        <h2>公司切片</h2>
+        <p id="detail-hint">点击散点或表格中的一行，查看近八季营收轨迹。</p>
+      </div>
+      <div id="detail" class="detail"></div>
+    </article>
+  </section>
+
+  <section class="panel table-panel">
+    <div class="panel-head row">
+      <div>
+        <h2>明细表</h2>
+        <p id="table-meta"></p>
+      </div>
+      <div class="table-tools">
+        <input id="search" type="search" placeholder="搜代码 / 名称 / 行业" />
+        <button id="export" type="button">导出 CSV</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-key="code">代码</th>
+            <th data-key="name">名称</th>
+            <th data-key="board">板块</th>
+            <th data-key="industry">行业</th>
+            <th data-key="revenue" class="num">营收(亿)</th>
+            <th data-key="revYoy" class="num">营收同比</th>
+            <th data-key="profit" class="num">净利(亿)</th>
+            <th data-key="npYoy" class="num">净利同比</th>
+            <th data-key="roe" class="num">ROE</th>
+            <th data-key="mcap" class="num">市值(亿)</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    数据由浏览器本地伪随机生成，每次刷新或点「换一批样本」都会重抽。不代表真实上市公司，也不构成投资建议。
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
