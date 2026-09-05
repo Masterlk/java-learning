@@ -147,6 +147,17 @@ button:hover { filter: brightness(1.08); }
   overflow: hidden;
 }
 
+.ticker span {
+  display: inline-block;
+  min-width: 100%;
+  animation: tape 42s linear infinite;
+}
+
+@keyframes tape {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
 .kpis {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -311,9 +322,12 @@ footer {
 }
 
 @media (max-width: 980px) {
-  .top, .stage, .kpis { grid-template-columns: 1fr; }
+  .top, .stage { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: 1fr 1fr; }
   .top { padding: 20px 16px 8px; }
   .kpis, .stage, .table-panel, .ticker, footer { margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0; }
   .kpis { padding: 0 0 12px; margin: 0 16px 12px; }
   .stage { padding: 0 0 12px; }
+  .panel-head.row, .table-tools { flex-wrap: wrap; }
+  .table-tools input { min-width: 0; width: 100%; }
 }

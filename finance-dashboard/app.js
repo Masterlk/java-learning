@@ -154,7 +154,12 @@ function renderKpis() {
     .map(([k, v, e]) => `<div class="kpi"><span>${k}</span><b>${v}</b><em>${e}</em></div>`)
     .join("");
   const tape = pass.slice(0, 18).map((r) => `${r.code} ${r.name} 营收${pct(r.revYoy)} 净利${pct(r.npYoy)}`).join("    ·    ");
-  document.getElementById("ticker").textContent = tape || "当前阈值下没有双增公司，试试调低阈值或换一批样本。";
+  const ticker = document.getElementById("ticker");
+  if (!tape) {
+    ticker.innerHTML = "当前阈值下没有双增公司，试试调低阈值或换一批样本。";
+  } else {
+    ticker.innerHTML = `<span>${tape}    ·    ${tape}</span>`;
+  }
 }
 
 function svgEl(name, attrs) {
@@ -235,12 +240,13 @@ function renderIndustry() {
   const height = 20 + counts.length * rowH;
   const svg = svgEl("svg", { viewBox: `0 0 ${width} ${height}` });
   const maxN = Math.max(1, ...counts.map((c) => c.n));
+  const labelW = 76;
   counts.forEach((c, i) => {
     const y = 8 + i * rowH;
-    const w = ((width - 120) * c.n) / maxN;
+    const w = ((width - labelW - 36) * c.n) / maxN;
     svg.appendChild(svgEl("text", { x: 0, y: y + 12, fill: "#c5d6cb", "font-size": 12 })).textContent = c.name;
-    svg.appendChild(svgEl("rect", { x: 78, y: y, width: Math.max(w, 2), height: 16, fill: "#3ee08a" }));
-    svg.appendChild(svgEl("text", { x: 86 + w, y: y + 12, fill: "#8ea398", "font-size": 11 })).textContent = c.n;
+    svg.appendChild(svgEl("rect", { x: labelW, y: y, width: Math.max(w, 2), height: 16, fill: "#3ee08a" }));
+    svg.appendChild(svgEl("text", { x: Math.min(labelW + w + 8, width - 8), y: y + 12, fill: "#8ea398", "font-size": 11 })).textContent = c.n;
   });
   host.appendChild(svg);
 }
@@ -260,10 +266,10 @@ function renderTop() {
   }
   top.forEach((row, i) => {
     const y = 8 + i * rowH;
-    const w = ((width - 150) * row.npYoy) / maxV;
+    const w = ((width - 168) * row.npYoy) / maxV;
     svg.appendChild(svgEl("text", { x: 0, y: y + 14, fill: "#c5d6cb", "font-size": 12 })).textContent = row.name;
-    svg.appendChild(svgEl("rect", { x: 86, y: y, width: Math.max(w, 4), height: 18, fill: "#d7b56a" }));
-    svg.appendChild(svgEl("text", { x: 94 + w, y: y + 14, fill: "#e9f2ec", "font-size": 11 })).textContent = pct(row.npYoy);
+    svg.appendChild(svgEl("rect", { x: 90, y: y, width: Math.max(w, 4), height: 18, fill: "#d7b56a" }));
+    svg.appendChild(svgEl("text", { x: Math.min(98 + w, width - 8), y: y + 14, fill: "#e9f2ec", "font-size": 11 })).textContent = pct(row.npYoy);
   });
   host.appendChild(svg);
 }
